@@ -29,7 +29,7 @@ const books = [
         author: "Khaled",
         genere: "Drama"
     },
-    {
+        {
         title: "The Notebook",
         author: "Nicholas Sparks",
         genre: "Romance"
@@ -73,12 +73,25 @@ exports.SingleBookController = function(req, res){
         nav: [
             {title: 'Books', link: '/books'},
             {title: 'Author', link: '/author'}
-        ],
-        book: books[id]
+        ]
     };
-    res.render(
-        '../views/book',{
-            data: data
-        }
-    )
+    (async function query(){
+        var query = "SELECT * FROM books where bookId = " + id;
+       await connection.query(query, function(err, rows){
+            if(err){
+                console.log(err);
+            }
+            else{
+                data.book = rows[0];
+                console.log(data.book);
+                // console.log(rows[0].bookId);
+                res.render(
+                    '../views/book',{
+                        data: data
+                    }
+                )
+            }
+        });
+    }())
+   
 }
